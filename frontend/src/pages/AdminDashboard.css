@@ -1,0 +1,72 @@
+.admin-dashboard {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.admin-dashboard h1 {
+  color: #2d6cdf;
+  margin-bottom: 20px;
+}
+
+/* Metrics cards */
+.metrics {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.metric-card {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.metric-card h3 {
+  font-size: 2rem;
+  margin: 10px 0 5px;
+  color: #333;
+}
+
+.metric-card p {
+  margin: 0;
+  color: #666;
+}
+
+/* Lists */
+.list-section {
+  margin-top: 30px;
+}
+
+.list-section h2 {
+  margin-bottom: 10px;
+  color: #2d6cdf;
+}
+
+.list-section input {
+  padding: 8px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 250px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+table th, table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table th {
+  background: #f0f4ff;
+  color: #2d6cdf;
+}

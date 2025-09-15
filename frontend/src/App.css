@@ -1,0 +1,192 @@
+/* Base Reset & Body */
+:root {
+  --bg: #eeeeee;
+  --card: #ffffff;
+  --muted: #6b7280;
+}
+
+body, #root {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(120deg, #e0c3fc, #8ec5fc 80%);
+  color: #111827;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding: 12px 15px;  /* Reduced significantly */
+  text-align: center;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2d6cdf;
+  padding: 8px 15px; /* Less padding */
+  color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 1.3rem; /* Smaller font */
+}
+
+.navbar-links {
+  display: flex;
+  gap: 15px; /* Less gap */
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 600; /* slightly lighter */
+  font-size: 0.85rem; /* smaller font */
+  transition: transform 0.15s;
+}
+
+.navbar-links a:hover {
+  text-decoration: underline;
+  background-color: white;
+  color: #2d6cdf;
+  transform: scale(1.05);
+}
+
+/* Footer */
+.footer {
+  background: #2d6cdf;
+  padding: 12px 10px; /* Less padding */
+  text-align: center;
+  color: #f7f8f8;
+  border-top: 1px solid #ddd;
+}
+
+.footer p {
+  margin: 2px 0; /* Tight margins */
+  font-size: 0.9rem; /* Smaller font */
+}
+
+.footer-links a {
+  color: #f7f8f8;
+  text-decoration: none;
+  margin: 0 5px;
+  font-size: 0.85rem;
+  transition: color 0.25s ease;
+}
+
+.footer-links a:hover {
+  color: #0056b3;
+}
+
+.footer-socials a {
+  margin: 0 6px; /* Smaller margin */
+  font-size: 18px; /* Slightly smaller */
+  color: #f7f8f8;
+  transition: color 0.25s ease;
+}
+
+.footer-socials a:hover {
+  color: #cf7a48;
+}
+
+/* Home Page */
+.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 65vh; /* More height reduction */
+  text-align: center;
+  padding: 0 10px;
+}
+
+.home h2 {
+  font-size: 2.8rem; /* Smaller */
+  margin-bottom: 12px;
+  color: #2d6cdf;
+  font-weight: 700;
+}
+
+.home p {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.2;
+}
+
+.home-header-image,
+.about-banner-image {
+  max-width: 700px; /* Smaller */
+  width: 150%;
+  height: auto;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+/* About page text block */
+.blur-container {
+  background: rgba(139, 180, 228, 0.55);
+  backdrop-filter: blur(8px);
+  padding: 12px 15px; /* Reduced */
+  border-radius: 6px;
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: left;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  color: #222;
+  font-size: 0.9rem; /* Reduced font size */
+  line-height: 1.3;
+}
+
+.about {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.about h2 {
+  font-weight: 600;
+  color: #2d6cdf;
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+/* Login & Signup containers */
+.login-container,
+.signup-container {
+  max-width: 400px; /* Reduced */
+  margin: 25px auto;
+  background: #fff;
+  padding: 15px 18px; /* Reduced padding */
+  border-radius: 6px; /* Reduced radius */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .home-header-image,
+  .about-banner-image {
+    max-width: 100%;
+  }
+  .blur-container {
+    padding: 10px 12px;
+    max-width: 100%;
+  }
+  .login-container,
+  .signup-container {
+    width: 90vw;
+    max-width: none;
+  }
+}

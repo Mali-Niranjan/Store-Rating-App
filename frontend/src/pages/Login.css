@@ -1,0 +1,86 @@
+.login-bg {
+  min-height: 88vh;
+  min-width: 170vh;
+  display: flex;
+  justify-content:space-around;
+  align-items: center;
+  background: linear-gradient(120deg, #e0c3fc, #8ec5fc 80%);
+}
+
+.login-container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  text-align: center;
+ 
+  z-index: 1;
+}
+
+.role-card-list {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-top: 2.2rem;
+}
+
+.role-card {
+  padding: 1.5rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 130px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.role-card:hover {
+  transform: scale(1.05);
+}
+
+.role-icon {
+  margin-bottom: 0.6rem;
+}
+
+.role-name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
+}
+
+.form-container {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: #2d6cdf;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background: #1b4da5;
+}
+
+.toggle-link {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  cursor: pointer;
+}

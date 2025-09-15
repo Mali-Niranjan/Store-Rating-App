@@ -1,0 +1,202 @@
+.login-bg {
+  min-height: 88vh;
+  min-width: 170vh;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(120deg, #e0c3fc, #8ec5fc 80%);
+  transition: background 0.6s;
+}
+
+.login-container {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.14);
+  text-align: center;
+  min-width: 330px;
+  z-index: 1;
+  border: 2px solid #eee;
+  transition: border 0.4s, box-shadow 0.5s;
+  position: relative;
+}
+
+.role-header {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.role-badge {
+  margin-left: 14px;
+  padding: 3px 12px 3px 10px;
+  border-radius: 50px;
+  font-size: 1rem;
+  display: inline-block;
+  animation: popIn 0.5s;
+}
+.role-badge.role-admin {
+  background: #e0c3fc;
+  color: #5e369e;
+}
+.role-badge.role-user {
+  background: #8ec5fc;
+  color: #174ea6;
+}
+.role-badge.role-owner {
+  background: #fcd142;
+  color: #b78f14;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.role-card-list {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  margin-top: 2.2rem;
+}
+
+.role-card {
+  padding: 1.5rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 135px;
+  text-align: center;
+  box-shadow: 0 1px 10px rgba(70, 70, 130, 0.11);
+  background: #f8f8fa;
+  transition: transform 0.27s, box-shadow 0.15s, border 0.35s;
+  border: 2.5px solid transparent;
+}
+.role-card.admin:hover,
+.role-card.admin:focus {
+  border: 2.5px solid #e0c3fc;
+  background: #f5ebfc;
+}
+.role-card.user:hover,
+.role-card.user:focus {
+  border: 2.5px solid #8ec5fc;
+  background: #e6f2fc;
+}
+.role-card.owner:hover,
+.role-card.owner:focus {
+  border: 2.5px solid #fcd142;
+  background: #fffae2;
+}
+.role-icon {
+  font-size: 2.1rem;
+  margin-bottom: 0.6rem;
+  display: block;
+}
+.role-name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
+}
+
+.form-container {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.form-container input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  transition: border 0.3s, box-shadow 0.25s;
+}
+.form-container input:focus {
+  border: 1.2px solid #2d6cdf;
+  box-shadow: 0 1px 8px #addcff50;
+  outline: none;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: #2d6cdf;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.31s;
+}
+.submit-btn:hover {
+  background: #1b4da5;
+}
+
+/* ✅ Signup button styles */
+.signup-btn {
+  width: 100%;
+  padding: 12px;
+  background: #28a745;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s;
+}
+.signup-btn:hover {
+  background: #218838;
+}
+
+.toggle-link {
+  margin-top: 12px;
+  font-size: 0.97rem;
+  text-decoration: none;
+  color: #484c5f;
+  cursor: pointer;
+  opacity: 0.89;
+}
+
+.role-anim {
+  animation: roleSwitchAnim 0.9s cubic-bezier(0.39, 0.55, 0.51, 1.32);
+}
+@keyframes roleSwitchAnim {
+  0% {
+    transform: scale(0.99) rotateY(12deg);
+    box-shadow: 0 4px 34px rgba(110, 70, 230, 0.07);
+  }
+  45% {
+    transform: scale(1.07) rotateY(-7deg);
+  }
+  90% {
+    transform: scale(1) rotateY(1deg);
+  }
+  100% {
+    transform: scale(1) rotateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .login-bg {
+    min-width: 100vw;
+  }
+  .login-container {
+    min-width: 96vw;
+  }
+}
+.role-card:hover {
+  transform: scale(1.05);
+}

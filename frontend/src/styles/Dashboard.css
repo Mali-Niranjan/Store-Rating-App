@@ -1,0 +1,38 @@
+Shared dashboard styles
+.dashboard-page { padding: 18px; max-width: 1100px; margin: 0 auto; }
+.dash-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.btn-logout { margin-left:10px; background:#e74c3c; color:#fff; border:none; padding:8px 10px; border-radius:6px; cursor:pointer; }
+
+.stats-row { display:flex; gap:12px; margin-bottom:16px; }
+.stat-card { background:#fff; padding:14px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.05); flex:1; text-align:center; }
+
+.content-grid { display:flex; gap:16px; align-items:flex-start; }
+.panel { background:#fff; padding:12px; border-radius:8px; box-shadow: 0 6px 20px rgba(0,0,0,0.03); margin-bottom:14px; }
+.table-card { margin-top:8px; }
+.table-controls { display:flex; gap:8px; margin-bottom:8px; }
+.simple-table { width:100%; border-collapse:collapse; }
+.simple-table th, .simple-table td { border:1px solid #eee; padding:8px; text-align:left; }
+.panel-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.aside { width:280px; }
+
+.modal { position:fixed; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:40; }
+.modal-card { background:#fff; padding:16px; border-radius:8px; width:360px; }
+.modal-card input, .modal-card select { width:100%; padding:8px; margin-bottom:8px; border-radius:6px; border:1px solid #ccc; }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end; }
+
+.dashboard-container {
+  padding: 20px;
+}
+
+.dashboard-header {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
