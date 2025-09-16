@@ -1,70 +1,166 @@
-# Getting Started with Create React App
+# 🏬 Store Rating App  
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A **full-stack web application** where users can register, log in, and submit ratings for stores. The app supports **role-based access** for **System Administrators**, **Store Owners**, and **Normal Users**.  
 
-## Available Scripts
+This project was built as part of a **FullStack Coding Challenge**.  
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📸 Screenshots  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+_Add your screenshots here (examples below):_
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Landing Page**  
+  ![Landing Page](./Screenshots/Landing-page.png)  
 
-### `npm test`
+- **Normal User – Store Listing**  
+  ![Store List](./Screenshots/Normal-user.png)  
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🚀 Tech Stack  
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Frontend:** React.js (Create React App)  
+- **Backend:** Node.js + Express.js  
+- **Database:** PostgreSQL  
+- **Authentication:** JWT (JSON Web Tokens)  
+- **Hosting:** Render / Vercel / Local  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 👥 User Roles & Features  
 
-### `npm run eject`
+### 🔑 System Administrator  
+- Add new **stores**, **normal users**, and **admin users**  
+- Dashboard:  
+  - Total users  
+  - Total stores  
+  - Total ratings  
+- View and filter lists of:  
+  - Stores (Name, Email, Address, Rating)  
+  - Users (Name, Email, Address, Role)  
+- View details of all users  
+  - If user is a **Store Owner**, their rating details are shown  
+- Logout functionality  
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 👤 Normal User  
+- Sign up and log in  
+- Update password after logging in  
+- Browse all registered stores  
+- Search stores by name or address  
+- Store listing shows:  
+  - Store name, address, overall rating, and user’s own rating  
+- Submit or update rating (1–5)  
+- Logout functionality  
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 🏪 Store Owner  
+- Log in to the platform  
+- Update password  
+- Dashboard:  
+  - List of users who rated their store  
+  - Average rating of their store  
+- Logout functionality  
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 🛠️ Installation & Setup  
 
-## Learn More
+### 1️⃣ Clone the repository  
+git clone https://github.com/Mali-Niranjan/store-rating-app.git
+cd store-rating-app
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 2️⃣ Backend Setup
+cd backend
+npm install
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Create a .env file inside backend/:
+PORT=5000
+DATABASE_URL=your_postgres_connection_string
+JWT_SECRET=your_jwt_secret
 
-### Code Splitting
+Run backend:
+npm run dev
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 3️⃣ Frontend Setup
+cd frontend
+npm install
 
-### Analyzing the Bundle Size
+Start frontend:
+npm start
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+By default:
 
-### Making a Progressive Web App
+Frontend → http://localhost:3000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Backend → http://localhost:5000
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+###🗄️ Database Schema
 
-### Deployment
+Users Table
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+| Field    | Type   | Notes                      |
+| -------- | ------ | -------------------------- |
+| id       | int PK | Unique identifier          |
+| name     | string | 20–60 chars                |
+| email    | string | Unique                     |
+| password | string | Hashed                     |
+| address  | string | ≤ 400 chars                |
+| role     | enum   | `admin` / `user` / `owner` |
 
-### `npm run build` fails to minify
+Stores Table
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Field   | Type   | Notes             |
+| ------- | ------ | ----------------- |
+| id      | int PK | Unique identifier |
+| name    | string | Store name        |
+| email   | string | Store contact     |
+| address | string | Store address     |
+
+Ratings Table
+
+| Field   | Type   | Notes                  |
+| ------- | ------ | ---------------------- |
+| id      | int PK | Unique identifier      |
+| userId  | FK     | References `Users.id`  |
+| storeId | FK     | References `Stores.id` |
+| rating  | int    | Range 1–5              |
+
+---
+
+### 🔗 API Endpoints (High-level)
+
+Authentication
+
+- POST /api/auth/signup → Register user
+- POST /api/auth/login → Login user
+
+Users
+
+- GET /api/users → List users (Admin only)
+- PUT /api/users/:id/password → Update password
+
+Stores
+
+- GET /api/stores → List all stores
+- POST /api/stores → Add store (Admin only)
+
+Ratings
+
+- POST /api/ratings → Submit rating
+- PUT /api/ratings/:id → Update rating
+
+---
+
+### ✅ Validations
+
+- Name: 20–60 characters
+- Address: Max 400 characters
+- Password: 8–16 characters, must include at least one uppercase letter and one special character
+- Email: Must follow valid email format
+
+---
+
+### 📄 License
+This project is licensed under the MIT License.
