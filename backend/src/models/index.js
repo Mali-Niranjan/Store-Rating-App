@@ -1,18 +1,24 @@
-const Sequelize = require('sequelize');
-const sequelize = require('../config/db');
+const pool = require("../config/db");
 
-const User = require('./user')(sequelize, Sequelize.DataTypes);
-const Store = require('./store')(sequelize, Sequelize.DataTypes);
-const Rating = require('./rating')(sequelize, Sequelize.DataTypes);
+// Create users table if it doesn't exist
+const createTables = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) DEFAULT 'user',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    console.log("Tables created or already exist.");
+  } catch (err) {
+    console.error("Error creating tables:", err);
+  }
+};
 
-// Associations
-User.hasMany(Store, { foreignKey: 'ownerId', as: 'stores' });
-Store.belongsTo(User, { foreignKey: 'ownerId', as: 'owner' });
+createTables();
 
-User.hasMany(Rating, { foreignKey: 'userId', as: 'ratings' });
-Rating.belongsTo(User, { foreignKey: 'userId', as: 'user' });
-
-Store.hasMany(Rating, { foreignKey: 'storeId', as: 'ratings' });
-Rating.belongsTo(Store, { foreignKey: 'storeId', as: 'store' });
-
-module.exports = { sequelize, User, Store, Rating };
+module.exports = { pool };

@@ -1,72 +1,88 @@
-// src/pages/Login.js
-import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import API from "../api/api"; // Axios instance
-import { useAuth } from "../auth/AuthContext"; // ✅ use AuthContext
+// frontend/src/pages/Login.js
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import API, { loginAPI } from "../api/api";
 import "../styles/Login.css";
+import { useAuth } from "../auth/AuthContext"; // <-- updated
 
-const roleColors = { admin: "#e0c3fc", user: "#8ec5fc", owner: "#fcd142" };
+const roleColors = {
+  admin: "#e0c3fc",
+  user: "#8ec5fc",
+  owner: "#fcd142",
+};
+
 const roleShadows = {
   admin: "rgba(224,195,252,0.25)",
   user: "rgba(142,197,252,0.25)",
   owner: "rgba(252,209,66,0.18)",
 };
 
+// quick seeded credentials (matches backend seed from earlier instructions)
+// - password: "123456"
+const seededUsers = [
+  { role: "admin", email: "admin@demo.com", password: "123456" },
+  { role: "user", email: "user@demo.com", password: "123456" },
+  { role: "owner", email: "owner@demo.com", password: "123456" },
+];
+
 export default function Login() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { login } = useAuth(); // ✅ use login() from context
-
+  const { setUser } = useAuth(); // <-- updated
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginRole, setLoginRole] = useState(null);
   const [anim, setAnim] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Page user tried to visit before being redirected to login
-  const from = location.state?.from?.pathname || null;
+  // quick helper: choose role login for testing
+  const quickLogin = (role) => {
+    setLoginRole(role);
+    const u = seededUsers.find((x) => x.role === role);
+    if (u) {
+      setEmail(u.email);
+      setPassword(u.password);
+      setAnim(true);
+      setTimeout(() => setAnim(false), 800);
+    } else {
+      alert("No user with that role seeded.");
+    }
+  };
 
-  const performLogin = async (emailInput, passwordInput) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await API.post("/auth/login", {
-        email: emailInput,
-        password: passwordInput,
-      });
+      const res = await loginAPI({ email: email.trim(), password });
 
-      // ✅ Save in AuthContext + localStorage
-      login(res.data.user, res.data.token);
+      const { msg, user, token } = res.data;
 
-      const userRole = res.data.user.role;
-
-      // Redirect logic
-      if (from) {
-        navigate(from, { replace: true });
-      } else {
-        if (userRole === "admin") navigate("/admin");
-        else if (userRole === "owner") navigate("/store-owner");
-        else navigate("/user");
+      if (!token) {
+        alert(msg || "Login failed");
+        setLoading(false);
+        return;
       }
+
+      // persist token & user
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // update AuthContext
+      setUser(user);
+
+      // set default auth header
+      API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      // redirect by role
+      if (user.role === "admin") navigate("/admin");
+      else if (user.role === "owner") navigate("/store-owner");
+      else navigate("/user");
     } catch (err) {
-      alert(err?.response?.data?.message || "Login failed");
+      const msg =
+        err?.response?.data?.msg || err?.response?.data?.message || err.message || "Login failed";
+      alert(msg);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!loginRole) {
-      alert("Please select a role before logging in.");
-      return;
-    }
-    performLogin(email, password);
-  };
-
-  const selectRole = (role) => {
-    setLoginRole(role);
-    setAnim(true);
-    setTimeout(() => setAnim(false), 800);
   };
 
   return (
@@ -84,9 +100,8 @@ export default function Login() {
           boxShadow: loginRole
             ? `0px 8px 24px ${roleShadows[loginRole]}`
             : "0px 8px 24px rgba(0, 0, 0, 0.10)",
-          border: loginRole
-            ? `2px solid ${roleColors[loginRole]}`
-            : "2px solid #eee",
+          border: loginRole ? `2px solid ${roleColors[loginRole]}` : "2px solid #eee",
+          transition: "border 0.4s, box-shadow 0.5s",
         }}
       >
         <h2 className="role-header">
@@ -110,7 +125,9 @@ export default function Login() {
             onChange={(e) => setEmail(e.target.value)}
             required
             className="input-anim"
+            autoComplete="email"
           />
+
           <label>Password</label>
           <input
             type="password"
@@ -118,6 +135,7 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
             required
             className="input-anim"
+            autoComplete="current-password"
           />
 
           <button className="submit-btn" type="submit" disabled={loading}>
@@ -128,24 +146,31 @@ export default function Login() {
             type="button"
             className="signup-btn"
             onClick={() => navigate("/signup")}
+            disabled={loading}
           >
             Signup for New User
           </button>
         </form>
 
         <div className="role-card-list">
-          <div className="role-card admin" onClick={() => selectRole("admin")}>
+          <div className="role-card admin" onClick={() => quickLogin("admin")}>
             <span className="role-icon">🛡️</span>
             <div className="role-name">Admin</div>
           </div>
-          <div className="role-card user" onClick={() => selectRole("user")}>
+          <div className="role-card user" onClick={() => quickLogin("user")}>
             <span className="role-icon">👤</span>
             <div className="role-name">User</div>
           </div>
-          <div className="role-card owner" onClick={() => selectRole("owner")}>
+          <div className="role-card owner" onClick={() => quickLogin("owner")}>
             <span className="role-icon">🏪</span>
             <div className="role-name">Store Owner</div>
           </div>
+        </div>
+
+        <div className="toggle-link" style={{ marginTop: 10 }}>
+          <small>
+            Use a card above, then Login, to auto-fill and animate entry for each role.
+          </small>
         </div>
       </div>
     </div>

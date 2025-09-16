@@ -1,73 +1,60 @@
-// src/pages/AdminDashboard.js
 import React, { useEffect, useState } from "react";
 import "./AdminDashboard.css";
 import { FaUsers, FaStore, FaStar } from "react-icons/fa";
-import API from "../api/api";
+import { useAuth } from "../auth/AuthContext";
+import { useNavigate } from "react-router-dom";
+import API from "../api/api"; // make sure API points to your backend
 
 export default function AdminDashboard() {
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+
   const [stores, setStores] = useState([]);
   const [users, setUsers] = useState([]);
-  const [ratings, setRatings] = useState([]);
 
-  // Filters
   const [storeFilter, setStoreFilter] = useState("");
   const [userFilter, setUserFilter] = useState("");
 
-  // ✅ Fetch data from backend
-  const fetchData = async () => {
+  // Fetch admin dashboard data
+  const getData = async () => {
     try {
-      const [storeRes, userRes, ratingRes] = await Promise.all([
-        API.get("/stores"),   // adjust endpoint
-        API.get("/users"),    // adjust endpoint
-        API.get("/ratings"),  // adjust endpoint
-      ]);
-      setStores(storeRes.data);
-      setUsers(userRes.data);
-      setRatings(ratingRes.data);
+      const res = await API.get("/admin/data"); // adjust endpoint
+      setStores(res.data.stores || []);
+      setUsers(res.data.users || []);
     } catch (err) {
-      console.error("Error fetching data:", err);
+      console.error("Error fetching admin data:", err);
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    navigate("/login");
+  };
+
   useEffect(() => {
-    fetchData();
+    getData();
   }, []);
 
-  // ✅ Metrics
+  // Metrics
   const totalUsers = users.length;
   const totalStores = stores.length;
-  const totalRatings = ratings.length;
-
-  // ✅ Calculate average rating for each store
-  const storesWithAvg = stores.map((store) => {
-    const storeRatings = ratings.filter((r) => r.storeId === store.id);
-    const avgRating = storeRatings.length
-      ? (
-          storeRatings.reduce((sum, r) => sum + r.rating, 0) /
-          storeRatings.length
-        ).toFixed(2)
-      : "—";
-    return { ...store, avgRating };
-  });
-
-  // ✅ Add store owner ratings to user list
-  const usersWithRatings = users.map((u) => {
-    if (u.role === "Store Owner") {
-      const ownerRatings = ratings.filter((r) => r.storeId === u.storeId);
-      const avgRating = ownerRatings.length
-        ? (
-            ownerRatings.reduce((sum, r) => sum + r.rating, 0) /
-            ownerRatings.length
-          ).toFixed(2)
-        : "—";
-      return { ...u, rating: avgRating };
-    }
-    return { ...u, rating: "-" };
-  });
+  const totalRatings = stores.reduce(
+    (sum, s) => sum + Math.round(s.avgRating || 0),
+    0
+  );
 
   return (
     <div className="admin-dashboard">
-      <h1>System Administrator Dashboard</h1>
+      <header className="dash-header">
+        <h1>System Administrator Dashboard</h1>
+        <div>
+          <button className="btn-logout" onClick={logout}>
+            Logout
+          </button>
+        </div>
+      </header>
 
       {/* Metrics */}
       <div className="metrics">
@@ -107,7 +94,7 @@ export default function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {storesWithAvg
+            {stores
               .filter((s) =>
                 s.name.toLowerCase().includes(storeFilter.toLowerCase())
               )
@@ -143,7 +130,7 @@ export default function AdminDashboard() {
             </tr>
           </thead>
           <tbody>
-            {usersWithRatings
+            {users
               .filter((u) =>
                 u.name.toLowerCase().includes(userFilter.toLowerCase())
               )
@@ -153,7 +140,7 @@ export default function AdminDashboard() {
                   <td>{user.email}</td>
                   <td>{user.address}</td>
                   <td>{user.role}</td>
-                  <td>{user.rating}</td>
+                  <td>{user.role === "Store Owner" ? user.rating : "-"}</td>
                 </tr>
               ))}
           </tbody>

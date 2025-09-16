@@ -1,67 +1,34 @@
-// // backend/server.js
-// const express = require("express");
-// const cors = require("cors");
-// require("dotenv").config();
-
-// const authRoutes = require("./src/routes/auth");
-
-
-// const app = express();
-
-// app.use(cors());
-// app.use(express.json());
-
-// app.use("/api/auth", authRoutes);
-
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-// const express = require("express");
-// const cors = require("cors");
-// require("dotenv").config();
-
-// const authRoutes = require("./src/routes/auth");
-
-// const app = express();
-
-// // Middleware
-// app.use(cors());
-// app.use(express.json()); // parse JSON bodies
-
-// // Routes
-// app.use("/api/auth", authRoutes);
-
-// // Default route
-// app.get("/", (req, res) => res.send("API is running"));
-
-// // Start server
-// const PORT = process.env.PORT || 5000;
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
+require("dotenv").config();  
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
-
-const authRoutes = require("./src/routes/auth"); // adjust path if needed
+const bodyParser = require("body-parser");
+const authRoutes = require("./src/routes/auth"); 
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json());
 
-// ----------------- Middleware -----------------
-app.use(cors());                // enable CORS
-app.use(express.json());        // parse JSON request bodies
-app.use(express.urlencoded({ extended: true })); // parse form data
-
-// ----------------- Routes -----------------
+// Routes
 app.use("/api/auth", authRoutes);
 
-// Health check / root route
-app.get("/", (req, res) => {
-  res.send("✅ API is running");
-});
-
-// ----------------- Start server -----------------
+// ✅ Use .env PORT, fallback to 5000
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+const pool = require("./src/config/db");
+
+// Test route to check DB connection
+app.get("/api/test-db", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ success: true, time: result.rows[0] });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ success: false, error: "Database connection failed" });
+  }
 });
+
+
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
+);
+

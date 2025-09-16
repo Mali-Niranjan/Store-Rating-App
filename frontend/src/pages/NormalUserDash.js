@@ -1,41 +1,67 @@
-// src/pages/NormalUserDash.js
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
-import API from "../api/api";
+import API from "../api/api"; // make sure your API base URL is correct
 import "../styles/Dashboard.css";
 
 export default function NormalUserDash() {
-  const { user, logout, addRating, updatePassword } = useAuth();
+  const { user, setUser } = useAuth(); // get user and setUser from context
   const navigate = useNavigate();
-
   const [q, setQ] = useState("");
-  const [stores, setStores] = useState([]);
-  const [ratings, setRatings] = useState([]);
+  const [data, setData] = useState({ stores: [], ratings: [] });
   const [editingPass, setEditingPass] = useState(false);
   const [newPass, setNewPass] = useState("");
-  const [sortField, setSortField] = useState("name");
-  const [sortOrder, setSortOrder] = useState("asc"); // asc | desc
-  const [editingRating, setEditingRating] = useState(null);
-  const [newRating, setNewRating] = useState("");
 
-  // ✅ Fetch stores & ratings from backend
-  const fetchData = async () => {
+  // Fetch data from backend
+  const getData = async () => {
     try {
-      const storeRes = await API.get("/stores"); // adjust endpoint if different
-      const ratingRes = await API.get("/ratings"); // adjust endpoint if different
-      setStores(storeRes.data);
-      setRatings(ratingRes.data);
+      const res = await API.get("/user/data"); // adjust endpoint
+      setData(res.data);
     } catch (err) {
       console.error("Error fetching data:", err);
     }
   };
 
+  const addRating = async (userId, storeId, rating) => {
+    try {
+      await API.post("/user/rating", { userId, storeId, rating });
+      await getData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const deleteRating = async (userId, storeId) => {
+    try {
+      await API.delete(`/user/rating/${userId}/${storeId}`);
+      await getData();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updatePassword = async (userId, password) => {
+    try {
+      await API.put(`/user/${userId}/password`, { password });
+      // optionally update local user state
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
   useEffect(() => {
-    fetchData();
+    getData();
   }, []);
 
-  // ✅ Enrich store data
+  const stores = data.stores || [];
+  const ratings = data.ratings || [];
+
   const enriched = stores
     .map((s) => {
       const all = ratings.filter((r) => r.storeId === s.id);
@@ -49,65 +75,23 @@ export default function NormalUserDash() {
       (s) =>
         s.name.toLowerCase().includes(q.toLowerCase()) ||
         s.address.toLowerCase().includes(q.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (sortField === "name") {
-        return sortOrder === "asc"
-          ? a.name.localeCompare(b.name)
-          : b.name.localeCompare(a.name);
-      } else if (sortField === "address") {
-        return sortOrder === "asc"
-          ? a.address.localeCompare(b.address)
-          : b.address.localeCompare(a.address);
-      } else if (sortField === "avg") {
-        return sortOrder === "asc"
-          ? parseFloat(a.avg) - parseFloat(b.avg)
-          : parseFloat(b.avg) - parseFloat(a.avg);
-      }
-      return 0;
-    });
+    );
 
-  // ✅ Submit rating
-  const handleSubmitRating = async (storeId, rating) => {
-    if (!rating) return;
-    try {
-      await addRating(user.id, storeId, parseInt(rating, 10));
-      await fetchData(); // refresh data
-    } catch (err) {
-      console.error("Error adding rating:", err);
-    }
-    setEditingRating(null);
-    setNewRating("");
+  const handleSubmitRating = (storeId, rating) => {
+    addRating(user.id, storeId, parseInt(rating, 10));
   };
 
-  // ✅ Change password
   const handleChangePass = async (ev) => {
     ev.preventDefault();
     if (newPass.length < 4) return alert("Password too short");
-    try {
-      await updatePassword(user.id, newPass);
-      alert("Password updated");
-    } catch (err) {
-      console.error("Error updating password:", err);
-      alert("Error updating password");
-    }
+    await updatePassword(user.id, newPass);
+    alert("Password updated");
     setEditingPass(false);
   };
 
-  // ✅ Logout
   const handleLogout = () => {
     logout();
     navigate("/login");
-  };
-
-  // ✅ Sorting toggle
-  const toggleSort = (field) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortField(field);
-      setSortOrder("asc");
-    }
   };
 
   return (
@@ -122,7 +106,6 @@ export default function NormalUserDash() {
         </div>
       </header>
 
-      {/* Profile */}
       <section className="panel">
         <h3>Your Profile</h3>
         <p>
@@ -136,34 +119,15 @@ export default function NormalUserDash() {
         </p>
       </section>
 
-      {/* Stores */}
       <section className="panel">
         <div className="panel-header">
           <h3>Stores</h3>
-          <div className="filters">
+          <div>
             <input
               placeholder="Search stores by name or address"
               value={q}
               onChange={(e) => setQ(e.target.value)}
             />
-            <div className="sort-controls">
-              <label>Sort by: </label>
-              <select
-                value={sortField}
-                onChange={(e) => toggleSort(e.target.value)}
-              >
-                <option value="name">Name</option>
-                <option value="address">Address</option>
-                <option value="avg">Rating</option>
-              </select>
-              <button
-                onClick={() =>
-                  setSortOrder(sortOrder === "asc" ? "desc" : "asc")
-                }
-              >
-                {sortOrder === "asc" ? "Ascending ↑" : "Descending ↓"}
-              </button>
-            </div>
           </div>
         </div>
 
@@ -185,34 +149,25 @@ export default function NormalUserDash() {
                 <td>{s.avg}</td>
                 <td>{s.myRating ?? "—"}</td>
                 <td>
-                  {editingRating === s.id ? (
-                    <div className="update-box">
-                      <select
-                        value={newRating}
-                        onChange={(e) => setNewRating(e.target.value)}
-                      >
-                        <option value="">Select</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                      </select>
-                      <button
-                        onClick={() => handleSubmitRating(s.id, newRating)}
-                      >
-                        Save
-                      </button>
-                      <button onClick={() => setEditingRating(null)}>
-                        Cancel
-                      </button>
-                    </div>
-                  ) : (
-                    <div>
-                      <button onClick={() => setEditingRating(s.id)}>
-                        {s.myRating ? "Update" : "Rate"}
-                      </button>
-                    </div>
+                  <select
+                    defaultValue={s.myRating ?? ""}
+                    onChange={(e) => handleSubmitRating(s.id, e.target.value)}
+                  >
+                    <option value="">Rate</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                  {s.myRating && (
+                    <button
+                      onClick={() => {
+                        deleteRating(user.id, s.id);
+                      }}
+                    >
+                      Remove
+                    </button>
                   )}
                 </td>
               </tr>
@@ -221,7 +176,6 @@ export default function NormalUserDash() {
         </table>
       </section>
 
-      {/* Change password modal */}
       {editingPass && (
         <div className="modal">
           <form className="modal-card" onSubmit={handleChangePass}>

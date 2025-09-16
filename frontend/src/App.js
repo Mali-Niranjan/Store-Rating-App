@@ -11,7 +11,9 @@ import SystemAdminDash from "./pages/SystemAdminDash";
 import NormalUserDash from "./pages/NormalUserDash";
 import StoreOwnerDash from "./pages/StoreOwnerDash";
 
-import { FaLinkedin, FaGithub, FaEnvelope, FaInstagram } from "react-icons/fa";
+import {
+  FaLinkedin, FaGithub, FaEnvelope, FaInstagram
+} from "react-icons/fa";
 
 import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
@@ -28,7 +30,7 @@ function Home() {
         Welcome to StoreRank!
       </h2>
       <p className="animate__animated animate__fadeInUp animate__delay-1s">
-        You must be logged in to access the platform features 🔒.
+        You must be logged in to access the platform features.
       </p>
     </div>
   );
@@ -90,7 +92,6 @@ export default function App() {
               <Link to="/">Home</Link>
               <Link to="/about">About</Link>
               <Link to="/login">Login</Link>
-              <Link to="/signup">Signup</Link>
             </div>
           </nav>
 
@@ -98,6 +99,7 @@ export default function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/about-us" element={<About />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
@@ -138,7 +140,7 @@ export default function App() {
             <div className="footer-links">
               <Link to="/privacy-policy">Privacy Policy</Link> |{" "}
               <Link to="/terms-of-service">Terms of Service</Link> |{" "}
-              <Link to="/about">About Us</Link>
+              <Link to="/about-us">About Us</Link>
             </div>
             <div className="footer-socials">
               <a

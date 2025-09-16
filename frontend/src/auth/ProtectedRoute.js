@@ -1,20 +1,32 @@
+// import React from "react";
+// import { Navigate } from "react-router-dom";
+// import { useAuth } from "./AuthContext";
+
+// export default function ProtectedRoute({ children, allowedRoles = [] }) {
+//   const { user } = useAuth();
+//   if (!user) {
+//     return <Navigate to="/login" replace />;
+//   }
+//   if (allowedRoles.length && !allowedRoles.includes(user.role)) {
+//     // unauthorized -> send to their dashboard
+//     if (user.role === "admin") return <Navigate to="/admin" replace />;
+//     if (user.role === "owner") return <Navigate to="/store-owner" replace />;
+//     return <Navigate to="/user" replace />;
+//   }
+//   return children;
+// }
+
 // src/auth/ProtectedRoute.js
 import React from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
 export default function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useAuth();
-  const location = useLocation();
 
-  if (!user) {
-    // not logged in → send to login
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
+  if (!user) return <Navigate to="/login" />;
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    // logged in but role mismatch
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" />;
   }
 
   return children;
